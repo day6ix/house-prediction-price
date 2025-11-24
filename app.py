@@ -4,7 +4,7 @@ import joblib
 
 # Load model and scaler
 model = joblib.load("lopo.pkl")
-scaler = joblib.load("scaler1.pkl")
+scaler = joblib.load("scaler.pkl")
 
 st.title("🏡 California House Price Prediction App")
 st.write("Enter the house features to predict the price.")
