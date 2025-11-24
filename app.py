@@ -5,7 +5,7 @@ import joblib
 import matplotlib.pyplot as plt
 
 # Load model and scaler
-model = joblib.load("house_price_model.pkl")
+model = joblib.load("lopo.pkl")
 scaler = joblib.load("scaler.pkl")
 
 # Feature names (must match your model order)
