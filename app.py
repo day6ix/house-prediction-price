@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load model + scaler
-model = joblib.load("model.pkl")
-scaler = joblib.load("scaler1.pkl")
+model = joblib.load("lopo.pkl")
+scaler = joblib.load("scaler.pkl")
 
 st.set_page_config(
     page_title="California House Price Prediction",
