@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load model + scaler
-model = joblib.load("model.pkl")
+model = joblib.load("lopo.pkl")
 scaler = joblib.load("scaler1.pkl")
 
 st.set_page_config(
