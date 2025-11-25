@@ -3,128 +3,126 @@ import numpy as np
 import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Load model & scaler
-model = joblib.load("lopo.pkl")
-scaler = joblib.load("scaler.pkl")
+# Load model + scaler
+model = joblib.load("model.pkl")
+scaler = joblib.load("scaler1.pkl")
 
-feature_names = [
-    "MedInc", "HouseAge", "AveRooms", "AveBedrms", "Population",
-    "AveOccup", "Latitude", "Longitude",
-    "RoomsPerPerson", "BedsPerRoom", "PopulationPerHouse"
-]
-
-# ========== PAGE CONFIG ==========
-st.set_page_config(page_title="California House Price Prediction", layout="wide")
-
-# ========== HEADER ==========
-st.markdown(
-    """
-    <h1 style='text-align:center; margin-bottom:0;'>🏡 California House Price Prediction</h1>
-    <p style='text-align:center; font-size:18px; margin-top:0;'>Clean • Modern • Smart</p>
-    """,
-    unsafe_allow_html=True,
+st.set_page_config(
+    page_title="California House Price Prediction",
+    page_icon="🏡",
+    layout="centered",
 )
-st.write("")
 
-# ========== TABS ==========
-tab1, tab2 = st.tabs(["🔮 Predict Price", "📊 Visualizations"])
+# ========= HEADER UI ========= #
+st.markdown("""
+    <div style="text-align:center; padding:10px 0;">
+        <h1 style="color:#2E86C1;">🏡 California House Price Predictor</h1>
+        <p style="font-size:17px; color:#555;">
+            Enter house details → View prediction → Explore insights
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 
-# ============================================================
-# ======================= TAB 1: PREDICT =====================
-# ============================================================
+# ========= TABS ========= #
+tab1, tab2 = st.tabs(["🔮 Prediction", "📊 Visualizations"])
 
+
+# =========================================================
+#                    TAB 1 — PREDICTION
+# =========================================================
 with tab1:
-    st.markdown("### 🔢 Enter House Features")
 
-    col1, col2, col3 = st.columns(3)
+    st.markdown("### ✨ Enter House Features")
+
+    # Input fields
+    col1, col2 = st.columns(2)
 
     with col1:
         MedInc = st.number_input("Median Income", 0.0, 20.0, 5.0)
         HouseAge = st.number_input("House Age", 1, 60, 20)
-        AveRooms = st.number_input("Average Rooms", 0.5, 15.0, 6.0)
-        AveBedrms = st.number_input("Average Bedrooms", 0.5, 5.0, 1.0)
+        AveRooms = st.number_input("Avg Rooms", 0.5, 15.0, 6.0)
+        Population = st.number_input("Population", 1, 50000, 1200)
+        RoomsPerPerson = st.number_input("Rooms per Person", 0.001, 1.0, 0.005)
 
     with col2:
-        Population = st.number_input("Population", 1, 50000, 1200)
-        AveOccup = st.number_input("Average Occupancy", 0.5, 10.0, 3.5)
+        AveBedrms = st.number_input("Avg Bedrooms", 0.5, 5.0, 1.0)
+        AveOccup = st.number_input("Avg Occupancy", 0.5, 10.0, 3.5)
         Latitude = st.number_input("Latitude", 32.0, 42.0, 34.19)
         Longitude = st.number_input("Longitude", -125.0, -114.0, -118.45)
+        BedsPerRoom = st.number_input("Beds per Room", 0.05, 1.0, 0.16)
 
-    with col3:
-        RoomsPerPerson = st.number_input("RoomsPerPerson", 0.001, 0.1, 0.005)
-        BedsPerRoom = st.number_input("BedsPerRoom", 0.05, 0.5, 0.1667)
-        PopulationPerHouse = st.number_input("PopulationPerHouse", 1.0, 20000.0, 342.85)
+    PopulationPerHouse = st.number_input("Population per House", 1.0, 20000.0, 340.0)
 
-    input_data = np.array([[MedInc, HouseAge, AveRooms, AveBedrms, Population,
-                            AveOccup, Latitude, Longitude, RoomsPerPerson,
-                            BedsPerRoom, PopulationPerHouse]])
+    # Data vector
+    features = np.array([[MedInc, HouseAge, AveRooms, AveBedrms, Population,
+                          AveOccup, Latitude, Longitude, RoomsPerPerson,
+                          BedsPerRoom, PopulationPerHouse]])
 
-    st.write("")
+    if st.button("Predict Price 🧮"):
+        scaled = scaler.transform(features)
+        pred = model.predict(scaled)[0]
+        price = pred * 100000
 
-    # ------- Predict Button -------
-    if st.button("🚀 Predict House Price", use_container_width=True):
-        processed = scaler.transform(input_data)
-        prediction = model.predict(processed)[0]
-        price_usd = prediction * 100000
-
-        st.markdown(
-            f"""
+        st.markdown("""
             <div style="
+                background:#EBF5FB;
                 padding:20px;
-                border-radius:12px;
-                background:#F6F6F6;
+                border-radius:15px;
                 text-align:center;
-                border:1px solid #DDD;
-                margin-top:25px;
-            ">
-                <h2 style="color:#2C7BE5;">💰 Predicted Price: ${price_usd:,.2f}</h2>
+                border:1px solid #AED6F1;">
+                <h2 style="color:#1B4F72;">Predicted House Price</h2>
+                <h1 style="color:#239B56;">${:,.2f}</h1>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        """.format(price), unsafe_allow_html=True)
 
-# ============================================================
-# ===================== TAB 2: VISUALS =======================
-# ============================================================
+    # Google map (small)
+    st.markdown("### 📍 House Location")
+    st.markdown(f"""
+        <iframe
+            width="100%"
+            height="250"
+            style="border-radius:15px;"
+            loading="lazy"
+            src="https://www.google.com/maps?q={Latitude},{Longitude}&hl=en&z=12&output=embed">
+        </iframe>
+    """, unsafe_allow_html=True)
 
+
+
+# =========================================================
+#                    TAB 2 — VISUALIZATIONS
+# =========================================================
 with tab2:
 
-    st.markdown("### 📊 Model Visualizations")
+    st.markdown("### 📊 Model Visual Insights")
 
-    vis1, vis2 = st.columns(2)
+    # ==== FEATURE IMPORTANCE ==== #
+    st.markdown("#### 📈 Feature Importance (small)")
 
-    # ---------------- Feature Importance -----------------
-    with vis1:
-        st.subheader("📈 Feature Importance (Small)")
-        try:
-            importances = model.feature_importances_
-            fig, ax = plt.subplots(figsize=(4, 3))
-            sorted_idx = np.argsort(importances)
-            ax.barh(np.array(feature_names)[sorted_idx], importances[sorted_idx])
-            ax.set_title("Feature Importance", fontsize=10)
-            ax.tick_params(axis='both', labelsize=6)
-            st.pyplot(fig)
-        except:
-            st.info("Feature importance not available for this model.")
+    importances = model.feature_importances_
+    feature_names = [
+        "MedInc","HouseAge","AveRooms","AveBedrms","Population",
+        "AveOccup","Latitude","Longitude","RoomsPerPerson",
+        "BedsPerRoom","PopulationPerHouse"
+    ]
 
-    # ---------------- Correlation Heatmap ----------------
-    with vis2:
-        st.subheader("📉 Correlation Heatmap (Small)")
-        df_sample = pd.DataFrame(np.random.randn(200, len(feature_names)), columns=feature_names)
+    fig, ax = plt.subplots(figsize=(5, 3))
+    sorted_idx = np.argsort(importances)
+    ax.barh(np.array(feature_names)[sorted_idx], importances[sorted_idx])
+    ax.set_title("Feature Importance", fontsize=11)
+    ax.tick_params(labelsize=7)
+    st.pyplot(fig)
 
-        fig2, ax2 = plt.subplots(figsize=(4, 3))
-        cax = ax2.matshow(df_sample.corr())
-        fig2.colorbar(cax, shrink=0.5)
-        ax2.set_title("Correlation Heatmap", fontsize=10)
-        st.pyplot(fig2)
+    st.markdown("---")
 
-    st.write("---")
+    # ==== CORRELATION HEATMAP ==== #
+    st.markdown("#### 🔥 Correlation Heatmap (small sample)")
 
-    # ---------------- Map (Smaller) ----------------
-    st.subheader("🗺 House Location Map (Compact)")
-    map_data = pd.DataFrame({"lat": [Latitude], "lon": [Longitude]})
+    df = pd.DataFrame(np.random.rand(50, 11), columns=feature_names)
 
-    st.map(map_data)
-
-    st.caption("📍 Simplified map view for cleaner UI.")
+    fig2, ax2 = plt.subplots(figsize=(5, 3))
+    sns.heatmap(df.corr(), ax=ax2, cmap="Blues", cbar=False)
+    ax2.set_title("Correlation Heatmap", fontsize=11)
+    st.pyplot(fig2)
