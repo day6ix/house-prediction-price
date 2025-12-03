@@ -18,7 +18,7 @@ st.set_page_config(
 # ========= HEADER UI ========= #
 st.markdown("""
     <div style="text-align:center; padding:10px 0;">
-        <h1 style="color:#2E86C1;">🏡 California House Price Predictor</h1>
+        <h1 style="color:#2E86C1;">California House Price Predictor</h1>
         <p style="font-size:17px; color:#555;">
             Enter house details → View prediction → Explore insights
         </p>
@@ -26,7 +26,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ========= TABS ========= #
-tab1, tab2 = st.tabs(["🔮 Prediction", "📊 Visualizations"])
+tab1, tab2 = st.tabs(["🔮 Prediction", " Visualizations"])
 
 
 # =========================================================
@@ -60,7 +60,7 @@ with tab1:
                           AveOccup, Latitude, Longitude, RoomsPerPerson,
                           BedsPerRoom, PopulationPerHouse]])
 
-    if st.button("Predict Price 🧮"):
+    if st.button("Predict Price "):
         scaled = scaler.transform(features)
         pred = model.predict(scaled)[0]
         price = pred * 100000
@@ -91,9 +91,7 @@ with tab1:
 
 
 
-# =========================================================
 #                    TAB 2 — VISUALIZATIONS
-# =========================================================
 with tab2:
 
     st.markdown("### 📊 Model Visual Insights")
