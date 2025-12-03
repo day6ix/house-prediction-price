@@ -26,7 +26,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ========= TABS ========= #
-tab1, tab2 = st.tabs(["🔮 Prediction", " Visualizations"])
+tab1, tab2 = st.tabs([" Prediction", " Visualizations"])
 
 
 #                    TAB 1 — PREDICTION
