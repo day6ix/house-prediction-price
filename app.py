@@ -29,12 +29,11 @@ st.markdown("""
 tab1, tab2 = st.tabs(["🔮 Prediction", " Visualizations"])
 
 
-# =========================================================
 #                    TAB 1 — PREDICTION
-# =========================================================
+
 with tab1:
 
-    st.markdown("### ✨ Enter House Features")
+    st.markdown("### Enter House Features")
 
     # Input fields
     col1, col2 = st.columns(2)
@@ -78,7 +77,7 @@ with tab1:
         """.format(price), unsafe_allow_html=True)
 
     # Google map (small)
-    st.markdown("### 📍 House Location")
+    st.markdown("###  House Location")
     st.markdown(f"""
         <iframe
             width="100%"
@@ -94,10 +93,10 @@ with tab1:
 #                    TAB 2 — VISUALIZATIONS
 with tab2:
 
-    st.markdown("### 📊 Model Visual Insights")
+    st.markdown("###  Model Visual Insights")
 
     # ==== FEATURE IMPORTANCE ==== #
-    st.markdown("#### 📈 Feature Importance (small)")
+    st.markdown("#### Feature Importance (small)")
 
     importances = model.feature_importances_
     feature_names = [
@@ -116,7 +115,7 @@ with tab2:
     st.markdown("---")
 
     # ==== CORRELATION HEATMAP ==== #
-    st.markdown("#### 🔥 Correlation Heatmap (small sample)")
+    st.markdown("####  Correlation Heatmap (small sample)")
 
     df = pd.DataFrame(np.random.rand(50, 11), columns=feature_names)
 
